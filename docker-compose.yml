@@ -1,0 +1,45 @@
+version: "3.7"
+
+services:
+  sso-openldap:
+    container_name: sso-openldap
+    image: osixia/openldap:1.2.1
+    ports:
+      - 10389:389  
+    networks:
+      - sso-simulation-network  
+  postgres:
+    container_name: sso-postgres
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=password
+    networks:
+      - sso-simulation-network
+    volumes:
+      - sso-simulation-db:/var/lib/postgresql/data
+  keycloak:
+    container_name: sso-keycloak
+    image: jboss/keycloak
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    environment:
+      - DB_USER=keycloak
+      - DB_PASSWORD=password
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+    networks:
+      - sso-simulation-network
+
+networks:
+  sso-simulation-network:
+    name: sso-simulation-network
+
+volumes:
+  sso-simulation-db:
+    name: sso-simulation-db
