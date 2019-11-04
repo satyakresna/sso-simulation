@@ -3,6 +3,8 @@ version: "3.7"
 services:
   sso-openldap:
     container_name: sso-openldap
+    restart: unless-stopped
+    tty: true
     image: osixia/openldap:1.2.1
     ports:
       - 10389:389  
@@ -10,6 +12,8 @@ services:
       - sso-simulation-network  
   postgres:
     container_name: sso-postgres
+    restart: unless-stopped
+    tty: true
     image: postgres
     ports:
       - 5432:5432
@@ -23,6 +27,8 @@ services:
       - sso-simulation-db:/var/lib/postgresql/data
   keycloak:
     container_name: sso-keycloak
+    restart: unless-stopped
+    tty: true
     image: jboss/keycloak
     ports:
       - 8080:8080
